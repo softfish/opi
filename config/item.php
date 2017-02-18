@@ -18,7 +18,7 @@ return [
         ],
         'in_warehouse' => [
             'To order' =>[
-                'bar_status' => 'completed',
+                'bar_status' => 'complete',
                 'bar_info' => 'Item is ready for packaging.'
             ],
             'In warehouse' => [
@@ -30,13 +30,13 @@ return [
                 'bar_info' => 'Item has been delivered to the customer'
             ]
         ],
-        'delivery' => [
+        'delivered' => [
             'To order' =>[
-                'bar_status' => 'completed',
+                'bar_status' => 'complete',
                 'bar_info' => 'Item has been packed.'
             ],
             'In warehouse' => [
-                'bar_status' => 'completed',
+                'bar_status' => 'complete',
                 'bar_info' => 'Item has been shipped.'
             ],
             'Delivered' => [

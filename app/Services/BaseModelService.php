@@ -16,29 +16,32 @@ abstract class BaseModelService extends Controller{
 
 	/**
 	 *
-	 * Provide a list of item with pagination limit
+	 * Provide a list of tables items with pagination limit
 	 * 
 	 * @param array $filters
 	 * @param int $paginationLimit
-	 * @return \Illuminate\Pagination\Paginator 
+	 * @return \Illuminate\Pagination\LengthAwarePaginator 
 	 *
 	 */
-	protected function list(array $filters=null, int $paginationLimit=20) : \Illuminate\Pagination\Paginator
+	public function list(array $filters=null, int $paginationLimit=10) : \Illuminate\Pagination\LengthAwarePaginator
 	{
-		$query = \DB::table($this->baseTable);
+		$query = \DB::table(self::$baseTable);
 
-		$query = $this->applyFilters($query, $filters);
+		if (!empty($filters)){
+		    $query = $this->applyFilters($query, $filters);
+		}
+        // By default it always LIFO
+        $query->orderBy('id', 'DESC');
+		$rows = $query->paginate($paginationLimit);
 
-		$orders = $query->paginate($paginationLimit);
-
-		return $orders;
+		return $rows;
 	}
 
-	protected function applyFilter($query, array $filters)
+	protected function applyFilters($query, array $filters)
 	{
 		if (!empty($filters)){
 			foreach ($filters as $filter) {
-				switch (strtolower($filter['operator'])) {
+				switch ($filter['operator']) {
 					case '=':
 					case '>':
 					case '<':

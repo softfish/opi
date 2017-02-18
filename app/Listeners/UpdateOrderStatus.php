@@ -1,6 +1,6 @@
 <?php
 
-namespace \App\Listeners;
+namespace App\Listeners;
 
 use \App\Events\OrderStatusEvaluation;
 
@@ -34,17 +34,20 @@ class UpdateOrderStatus
         } else {
 
             $itemDeliveredCounter = 0;
-            foreach ($items as $item){
-                if ($item->physical_status != 'Delivered'){
-                    // Jump out from this foreach loop. There are still items not delivered so 
-                    // we don't need to counter anymore. And this will ensure the counter will
-                    // never be the same as the total number of items in the order.
-                    break;
+            $statusLookup = \App\Models\ItemPhysicalStatusLookup::where('name', 'Delivered')->first();
+            if (!empty($statusLookup)){
+                foreach ($items as $item){
+                    if ($item->physical_status_id != $statusLookup->id){
+                        // Jump out from this foreach loop. There are still items not delivered so 
+                        // we don't need to counter anymore. And this will ensure the counter will
+                        // never be the same as the total number of items in the order.
+                        break;
+                    }
+                    $itemDeliveredCounter ++;
                 }
-                $itemDeliveredCounter ++;
             }
 
-            if (counter($items) === $itemDeliveredCounter){
+            if (count($items) === $itemDeliveredCounter){
                 // if item delivered count is same as the total items in this order then
                 // we will mark this order to be completed.
                 $order->status = 'Completed';

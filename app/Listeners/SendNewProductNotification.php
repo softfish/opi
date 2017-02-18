@@ -1,8 +1,8 @@
 <?php
 
-namespace \App\Listeners;
+namespace App\Listeners;
 
-use \App\Events\ProudctCreated;
+use \App\Events\ProductCreated;
 use \App\Mail\newProductNotification;
 
 class SendNewProductNotification
@@ -23,15 +23,16 @@ class SendNewProductNotification
      * @param  ProudctCreated  $event
      * @return void
      */
-    public function handle(ProudctCreated $event)
+    public function handle(ProductCreated $event)
     {
         $product = $event->product;
 
-        // TODO
         // Sending out notification email to the admin.
         $to = env('ADMIN_EMAIL');
         $subject = 'New Product Registration';
-        // \Mail::to($to)->send(new newProductNotification());
+        \Mail::to($to)->send(new newProductNotification($product));
+
+        \Log::info('An notification email has been sent to admin in regard of product('.$product->id.') registration in the system.');
 
     }
 }

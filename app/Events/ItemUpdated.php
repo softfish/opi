@@ -1,8 +1,9 @@
 <?php
 
-namespace \App\Events;
+namespace App\Events;
 
 use \App\Models\Item;
+use \Illuminate\Queue\SerializesModels;
 
 class ItemCreated
 {

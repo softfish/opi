@@ -20,7 +20,7 @@ class Order extends Model
     protected $fillable = ['customer_name', 'address' ,'total'];
     
     public function items() {
-    	return $this->hasMany(ProductItem::class);
+    	return $this->hasMany(Item::class);
     }
 }
  

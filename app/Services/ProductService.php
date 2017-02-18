@@ -1,5 +1,5 @@
 <?php
-namespace \App\Services;
+namespace App\Services;
 
 class ProductService extends BaseModelService
 {
@@ -23,12 +23,23 @@ class ProductService extends BaseModelService
 	{
 		if (isset($data['sku'])){
 			// We must has the sku for the product.
-			$product = \App\Models\Product::create($data);
+			// Lets first check is the sku has already been used.
+			$product = \App\Models\Product::where('sku', $data['sku'])->first();
+			if (empty($product)){
+			     // we need to set a default price first, zero!
+			     $data['price'] = 0;
+			     $product = \App\Models\Product::create($data);
+		         \Log::info('A new product('.$product->id.') has been created.');
+			     
+			     // Only do this when we create a new product
+			     // Fire event on product is created so the admin got an email notification
+			     event(new \App\Events\ProductCreated($product));
+			} else {
+			    // If it is already been use the at a custom attribute to tell the
+			    // caller the product we return is an existing record.
+			    $product->existing = true;
+			}
 		}
-
-		// Fire event on product is created so the admin got an email notification
-		event(new App\Events\ProductCreated($product));
-		
 		return $product;
 	}
 
@@ -42,7 +53,8 @@ class ProductService extends BaseModelService
 	 */
 	public function view(int $productId): \App\Models\Product
 	{
-		return \App\Models\Product::where('id', $productId)->first();
+	    $product = \App\Models\Product::find($productId);
+	    return $product;
 	}
 
 	/**
@@ -53,19 +65,18 @@ class ProductService extends BaseModelService
 	 * @return \App\Models\Product
 	 *
 	 */
-	public function update(array $data): \App\Models\Product
+	public function update(array $data): bool
 	{
-		$product = \App\Models\Product::where('id', $data['id'])->first();
-
+		$product = \App\Models\Product::find($data['id']);
 		if (empty($product)){
-			\Log::warning(__METHOD__.' product not found.')
+			\Log::warning(__METHOD__.' product not found.');
 			return false;
 		}
 
 		$product->sku = $data['sku']?? $product->sku;
-		$product->product_id = $data['product_id']?? $product->product_id;
 		$product->label = $data['label']?? $product->label;
 		$product->description = $data['description']?? $product->description;
+		$product->price = $data['price']?? $product->price;
 		$product->updated_by = $data['updated_by']?? 'system';
 		$product->updated_at = time();
 		$product->save();

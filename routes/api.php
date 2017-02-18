@@ -26,10 +26,13 @@ Route::group(['prefix' => 'order'], function() {
 Route::group(['prefix' => 'product'], function() {
 	Route::post('new', ['as' => 'new-product', 'uses' => '\App\Http\Controllers\ProductController@apiCreate']);
 	Route::get('list', ['as' => 'product-list', 'uses' => '\App\Http\Controllers\ProductController@apiList']);
+	Route::post('property/add', ['as' => 'add-new-product-property', 'uses' => '\App\Http\Controllers\ProductController@addNewProperty']);
+	Route::get('property/delete/{id}', ['as' => 'remove-product-property', 'uses' => '\App\Http\Controllers\ProductController@removeProperty']);
 });
 
 Route::group(['prefix' => 'item'], function() {
     Route::post('new',['as' => 'new-item', 'uses' => '\App\Http\Controllers\ItemController@apiCreates']);
 	Route::get('list',['as' => 'item-list', 'uses' => '\App\Http\Controllers\ItemController@apiList']);
 	Route::post('update',['as' => 'item-update', 'uses' => '\App\Http\Controllers\ItemController@apiUpdate']);
+	Route::get('unlink-order/{id}',['as' => 'item-unlink-order', 'uses' => '\App\Http\Controllers\ItemController@apiRemoveItemFromOrder']);
 });

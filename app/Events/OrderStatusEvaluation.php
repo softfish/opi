@@ -1,8 +1,9 @@
 <?php
 
-namespace \App\Events;
+namespace App\Events;
 
 use \App\Models\Order;
+use Illuminate\Queue\SerializesModels;
 
 class OrderStatusEvaluation
 {

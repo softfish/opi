@@ -9,6 +9,11 @@ class OrderController extends Controller
     public function submitNewOrder(Request $request): \Illuminate\Http\JsonResponse
     {
         $postdata = $request->json()->all();
+        if (empty($postdata)){
+            // Sometime the request might not be json data.
+            // So just to be safe we load it again if we can't find any postdata from json.
+            $postdata = $request->all();
+        }
         
         // the post data structure must started from keyname 'order'
         if (isset($postdata['order'])) {
@@ -63,19 +68,24 @@ class OrderController extends Controller
     
     public function webList()
     {
-        $orders = \App\Models\Order::orderBy('id', 'DESC')->get();
+        $service = new \App\Services\OrderService();
+        $orders = $service->list();
         return view('admin.order.listv2', ['orders' => $orders]);
-    }
-    
-    public function getFullOrderData($id)
-    {
-        
     }
     
     public function viewOrder($id)
     {
         $order = \App\Models\Order::find($id);
-        $orderItems = \App\Services\ItemService::getOrderItemsData($id);
-        return view('admin.order.view-jq', ['order' => $order, 'orderItems' => $orderItems]);
+        
+        if (!empty($order)){
+            $orderItems = \App\Services\ItemService::getOrderItemsData($id);
+            return view('admin.order.view-jq', ['order' => $order, 'orderItems' => $orderItems]);
+        } else {
+            $flashMessages = [
+                'danger' => ['Order('.$id.') not found']
+             ];
+            $orders = \App\Models\Order::orderBy('id', 'DESC')->get();
+            return view('admin.order.listv2',['orders'=> $orders, 'flashMessages' => $flashMessages]);
+        }
     }
 }

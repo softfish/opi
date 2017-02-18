@@ -18,7 +18,7 @@ class OrderProcessor extends Command
      *
      * @var string
      */
-    protected $description = 'This command will get all open order and send it off to the event order processing. ';
+    protected $description = 'This command will get all open orders and send it off to the event OrderStatusEvaluation for processing. ';
 
     /**
      * Create a new command instance.
@@ -37,6 +37,11 @@ class OrderProcessor extends Command
      */
     public function handle()
     {
-        //
+        $orders = \App\Models\Order::where('status', 'In porgress')->all();
+        
+        foreach ($orders as $order){
+            event(new \App\Events\OrderStatusEvaluation($order));
+        }
+        
     }
 }
