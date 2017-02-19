@@ -214,7 +214,6 @@ class ProductController extends Controller
             $product = $service->create($postdata);
             if (! isset($product->existing) || $product->existing != true) {
                 $flashMessages['success'][] = 'A new product has been created [' . $product->sku . '].';
-                $flashMessages['success'][] = 'Since it is a new product an notification email will send to the system admin.';
             } else {
                 $flashMessages['warning'][] = 'This SKU has been used. Please check and try again.';
             }
