@@ -64,6 +64,7 @@ The system should be pretty empty now. So let inject some dummy data. Please see
 <div id="database_migration"></div>
 ## Database Migration
 Once you have installed the system and have the database configuration setup with your local server. You can use the following command to import the tables we used for this system.
+** Removeber you need to create the database first and put it into the .env file. You can rename the .env.example file and up the database configuration there.**
 ```
 // Run it from your root folder of the laravel framework.
 
@@ -133,7 +134,11 @@ You should be able to see the following output/response:
     "message": "A new order [20] has been submitted."
 }
 ```
+There is a script/command to be run at the backend (cronjob) to clear up the order status. This is one of the requirement from the requester. Since we can't mannually update the order status, the script will go through the business logic to update status or skip making any change on the order.
 
+```
+php artisan order:processor -vvv
+```
 
 <div id="assumptions"></div>
 ## Assumptions
