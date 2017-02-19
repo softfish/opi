@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
 class OrderProcessor extends Command
 {
+
     /**
      * The name and signature of the console command.
      *
@@ -40,16 +40,15 @@ class OrderProcessor extends Command
         $this->info('Loading order still in progress state..');
         $orders = \App\Models\Order::where('status', '=', 'In progress')->get();
         
-        $this->info(count($orders).' of orders found. ');
-        if (!empty($orders) && count($orders) > 0) {
-        $this->info('Start order evaluation...');
-            foreach ($orders as $order){
-                $this->info('checking order ('.$order->id.')...');
+        $this->info(count($orders) . ' of orders found. ');
+        if (! empty($orders) && count($orders) > 0) {
+            $this->info('Start order evaluation...');
+            foreach ($orders as $order) {
+                $this->info('checking order (' . $order->id . ')...');
                 event(new \App\Events\OrderStatusEvaluation($order));
                 $this->info('checking finished.');
             }
         }
         $this->info('Order evaluation end..');
-        
     }
 }

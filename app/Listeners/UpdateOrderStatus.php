@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Listeners;
 
 use \App\Events\OrderStatusEvaluation;
 
 class UpdateOrderStatus
 {
+
     /**
      * Create the event listener.
      *
@@ -19,26 +19,26 @@ class UpdateOrderStatus
     /**
      * Handle the event.
      *
-     * @param  OrderStatusEvaluation  $event
+     * @param OrderStatusEvaluation $event            
      * @return void
      */
     public function handle(OrderStatusEvaluation $event)
     {
         $order = $event->order;
-
+        
         $items = \App\Models\Item::where('order_id', $order->id)->get();
-
-        if (empty($items) || count($items) < 1){
+        
+        if (empty($items) || count($items) < 1) {
             // If there is no more item assign to this order then the order has been cancelled.
             $order->status = 'Cancelled';
         } else {
-
+            
             $itemDeliveredCounter = 0;
             $statusLookup = \App\Models\ItemPhysicalStatusLookup::where('name', 'Delivered')->first();
-            if (!empty($statusLookup)){
-                foreach ($items as $item){
-                    if ($item->physical_status_id != $statusLookup->id){
-                        // Jump out from this foreach loop. There are still items not delivered so 
+            if (! empty($statusLookup)) {
+                foreach ($items as $item) {
+                    if ($item->physical_status_id != $statusLookup->id) {
+                        // Jump out from this foreach loop. There are still items not delivered so
                         // we don't need to counter anymore. And this will ensure the counter will
                         // never be the same as the total number of items in the order.
                         break;
@@ -46,15 +46,14 @@ class UpdateOrderStatus
                     $itemDeliveredCounter ++;
                 }
             }
-
-            if (count($items) === $itemDeliveredCounter){
+            
+            if (count($items) === $itemDeliveredCounter) {
                 // if item delivered count is same as the total items in this order then
                 // we will mark this order to be completed.
                 $order->status = 'Completed';
             }
-
         }
-
+        
         $order->save();
     }
 }

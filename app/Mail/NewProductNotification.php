@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Mail;
 
 use \Illuminate\Mail\Mailable;
@@ -8,6 +7,7 @@ use App\Models\Product;
 
 class NewProductNotification extends Mailable
 {
+
     /**
      * The product instance.
      *
@@ -33,9 +33,9 @@ class NewProductNotification extends Mailable
     public function build()
     {
         return $this->subject('New Product Notification')
-                    ->view('email.admin.newproductnotification')
-                    ->with([
-                    	'product' => $this->product
-                    ]);
+            ->view('email.admin.newproductnotification')
+            ->with([
+            'product' => $this->product
+        ]);
     }
 }

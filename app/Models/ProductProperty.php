@@ -1,13 +1,13 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class ProductProperty extends Model
 {
+
     protected $table = 'product_properties';
-    
+
     protected $cast = [
         'id' => 'int',
         'product_id' => 'int',
@@ -15,6 +15,11 @@ class ProductProperty extends Model
         'name' => 'string',
         'value' => 'string'
     ];
-    
-    protected $fillable = ['product_id', 'type', 'name' ,'value'];
+
+    protected $fillable = [
+        'product_id',
+        'type',
+        'name',
+        'value'
+    ];
 }

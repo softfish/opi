@@ -7,6 +7,11 @@
 <div class="view page">
 	<?php if (isset($flashMessages)): ?>
 		@include('admin.snippets.flash-messages', ['flashMessages' => $flashMessages])
+	<?php elseif (\Session::has('flashMessages')) : ?>
+		<?php 
+		  $flashMessages = \Session::get('flashMessages');
+		 ?>
+		@include('admin.snippets.flash-messages', ['flashMessages' => $flashMessages])
 	<?php endif; ?>
 	
 	<ul class="breadcrumb">
@@ -24,11 +29,11 @@
         			<tbody>
         				<tr>
         					<td><strong>ID</strong></td>
-        					<td>{{ $item->item_id }}</td>
+        					<td>{{ $item->id }}</td>
         				</tr>
         				<tr>
         					<td><strong>Product SKU</strong></td>
-        					<td><a href="{{ url('/product/view') }}/{{ $item->product_id }}">{{ $item->sku }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
+        					<td><a href="{{ url('/product/view') }}/{{ $item->product_id }}">{{ $item->product()->first()->sku }} <i class="fa fa-external-link" aria-hidden="true"></i></a></td>
         				</tr>
         				<tr>
         					<td><strong>Order</strong></td>
@@ -47,7 +52,16 @@
         				<tr>
         					<td><strong>Physical Status</strong></td>
         					<td>
-        						<select id="item_status_selection" class="form-control" data-itemid="{{ $item->item_id }}">
+								<?php 
+								    $disabledHtml = '';
+								    $order = $item->order()->first();
+								    if (!empty($order)){
+								        if ($order->status === 'Completed'){
+								            $disabledHtml = 'disabled';
+								        }
+								    }
+								?>
+        						<select id="item_status_selection" class="form-control" data-itemid="{{ $item->id }}" {{ $disabledHtml }}>
         							<option value="" disabled>Select a Physical Status</option>
         							@foreach($availablePhyscialStatus as $pStatus)
         								{{--
@@ -66,11 +80,11 @@
         				</tr>
         				<tr>
         					<td><strong>Last Updated At</strong></td>
-        					<td>{{ $item->item_updated_at }}</td>
+        					<td>{{ $item->updated_at }}</td>
         				</tr>
         				<tr>
         					<td><strong>Item Created At</strong></td>
-        					<td>{{ $item->item_created_at }}</td>
+        					<td>{{ $item->created_at }}</td>
         				</tr>
         			</tbody>
         		</table>
@@ -90,7 +104,8 @@
     		</ul>
     	</div>
     	<div class="alert alert-warning">
-    		* You only can change the item's status to "Delivered" if it is assigned to an order.
+    		* You only can change the item's status to "Delivered" if it is assigned to an order.<br />
+    		* Also can't make anymore change once the order this item belong to has been completed.	
     	</div>
     </div>
 </div>

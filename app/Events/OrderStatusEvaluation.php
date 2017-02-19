@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Events;
 
 use \App\Models\Order;
@@ -14,12 +13,11 @@ class OrderStatusEvaluation
     /**
      * Create a new event instance.
      *
-     * @param  Order $order
+     * @param Order $order            
      * @return void
      */
     public function __construct(Order $order)
     {
         $this->order = $order;
     }
-
 }

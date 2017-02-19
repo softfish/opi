@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Events;
 
 use \App\Models\Item;
@@ -14,12 +13,11 @@ class ItemCreated
     /**
      * Create a new event instance.
      *
-     * @param  Item $item
+     * @param Item $item            
      * @return void
      */
     public function __construct(Item $item)
     {
         $this->item = $item;
     }
-
 }

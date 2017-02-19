@@ -9,7 +9,7 @@ class OrderController extends Controller
     public function submitNewOrder(Request $request): \Illuminate\Http\JsonResponse
     {
         $postdata = $request->json()->all();
-        if (empty($postdata)){
+        if (empty($postdata)) {
             // Sometime the request might not be json data.
             // So just to be safe we load it again if we can't find any postdata from json.
             $postdata = $request->all();
@@ -23,14 +23,14 @@ class OrderController extends Controller
                 'address' => 'required|max:255',
                 'total' => 'required|numeric',
                 'items.*.sku' => 'required',
-                'items.*.quantity' => 'required',
+                'items.*.quantity' => 'required'
             ]);
             
-            if ($v->fails()){
-               return \Response::json([
-                   'success' => false,
-                   'error' => $v->errors()
-               ]);
+            if ($v->fails()) {
+                return \Response::json([
+                    'success' => false,
+                    'error' => $v->errors()
+                ]);
             }
             // 1. create an order
             $service = new \App\Services\OrderService();
@@ -40,7 +40,7 @@ class OrderController extends Controller
                 \App\Services\ItemService::bulkCreate($order, $postdata['order']['items']);
                 return \Response::json([
                     'success' => true,
-                    'message' => 'A new order ['.$order->id.'] has been submitted.'
+                    'message' => 'A new order [' . $order->id . '] has been submitted.'
                 ]);
             } else {
                 return \Response::json([
@@ -55,7 +55,7 @@ class OrderController extends Controller
             ]);
         }
     }
-    
+
     public function apiList(): \Illuminate\Http\JsonResponse
     {
         $orders = \App\Models\Order::get();
@@ -65,27 +65,34 @@ class OrderController extends Controller
             'orders' => $orders
         ]);
     }
-    
+
     public function webList()
     {
         $service = new \App\Services\OrderService();
         $orders = $service->list();
-        return view('admin.order.listv2', ['orders' => $orders]);
+        return view('admin.order.listv2', [
+            'orders' => $orders
+        ]);
     }
-    
+
     public function viewOrder($id)
     {
         $order = \App\Models\Order::find($id);
         
-        if (!empty($order)){
+        if (! empty($order)) {
             $orderItems = \App\Services\ItemService::getOrderItemsData($id);
-            return view('admin.order.view-jq', ['order' => $order, 'orderItems' => $orderItems]);
+            return view('admin.order.view-jq', [
+                'order' => $order,
+                'orderItems' => $orderItems
+            ]);
         } else {
             $flashMessages = [
-                'danger' => ['Order('.$id.') not found']
-             ];
-            $orders = \App\Models\Order::orderBy('id', 'DESC')->get();
-            return view('admin.order.listv2',['orders'=> $orders, 'flashMessages' => $flashMessages]);
+                'danger' => [
+                    'Order(' . $id . ') not found'
+                ]
+            ];
+            \Session::flash('flashMessages', $flashMessages);
+            return redirect('/order/list');
         }
     }
 }

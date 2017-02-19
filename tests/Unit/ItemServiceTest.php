@@ -88,17 +88,59 @@ class ItemServiceTest extends TestCase
         \DB::rollBack();
     }
     
-    public function testBulkItemCreationWithoutAnOrder()
+    public function testItemListWithoutFilterAndLimitorArgs()
     {
-        $data['items'] = [
-            ['sku' => 'TESTSKU01', 'quantity' => 2],
-            ['sku' => 'TESTSKU02', 'quantity' => 1]
-        ];
+        $service = new \App\Services\ItemService();
+        $theList = $service->itemlist();
         
-        $data['order_id'] = null;
-        print "\n".__METHOD__."-------------------------------\n";
-        $this->bulkItemCreationTest($data);
+        $this->assertInstanceOf('\Illuminate\Pagination\LengthAwarePaginator', $theList);
+        $this->assertTrue((count($theList) > 0));
     }
+    
+    public function testUnlinkItemAndOrder()
+    {
+        \DB::beginTransaction();
+        //1. we need to find an existing item assigned to an order
+        $item = \App\Models\Item::whereNotNull('order_id')->first();
+        if(!empty($item)) {
+             $order = \App\Models\Order::find($item->order_id);
+        //2. preform the unlink to the item with it's order
+            if (\App\Services\ItemService::unlinkOrder($item->id)){
+        //3. check is the order can reach the item.
+                // Reload the item object
+                $item = \App\Models\Item::find($item->id);
+                $check = $order->items()->where('id', $item->id)->first();
+                if (empty($check)) {
+        //4. check the item status has become available and order_id is null
+                   $this->assertTrue(($item->status === 'Available'), 'Item status is not available');
+                   $this->assertTrue(($item->order_id === null), '>>> Item order_id is not null');
+                } else {
+                    // we still can see the link between the order and item
+                    // test failed
+                    $this->asserTrue(false, '>>> order still can get item');
+                }
+            } else {
+                // The unlink process failed
+                $this->assertTrue(false, '>>> The unlink process failed');
+            }
+        } else {
+            // If there has no item with order id then fail the test.
+            $this->assertTrue(false, '>>> no order item found...');
+        }
+        \DB::rollBack();
+    }
+    
+//     public function testBulkItemCreationWithoutAnOrder()
+//     {
+//         $data['items'] = [
+//             ['sku' => 'TESTSKU01', 'quantity' => 2],
+//             ['sku' => 'TESTSKU02', 'quantity' => 1]
+//         ];
+        
+//         $data['order_id'] = null;
+//         print "\n".__METHOD__."-------------------------------\n";
+//         $this->bulkItemCreationTest($data);
+//     }
     
 //     public function testBulkItemCreationWithAnOrder()
 //     {
@@ -142,7 +184,6 @@ class ItemServiceTest extends TestCase
             $this->assertTrue(($totalExpectedNumberOfItemWithOrder === count($items)));
             
         } else {
-var_dump($totalNumberOfSKUItemInDB);
             foreach ($totalNumberOfSKUItemInDB as $sku => $quantity) {
                 $items = \App\Models\Product::where('sku', $sku)->first()->items()->get();
                 $expectedTotal = $totalNumberOfSKUItemInDB[$sku]['additional_quantity'] + 

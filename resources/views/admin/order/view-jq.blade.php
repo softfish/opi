@@ -7,6 +7,11 @@
 <div class="view page">
 	<?php if (isset($flashMessages)): ?>
 		@include('admin.snippets.flash-messages', ['flashMessages' => $flashMessages])
+	<?php elseif (\Session::has('flashMessages')) : ?>
+		<?php 
+		  $flashMessages = \Session::get('flashMessages');
+		 ?>
+		@include('admin.snippets.flash-messages', ['flashMessages' => $flashMessages])
 	<?php endif; ?>
 	
 	<ul class="breadcrumb">
