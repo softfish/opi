@@ -6,36 +6,141 @@
 
 This is a project are aimed to create a online system with API for thrid party to push order request with a list specific products and their quantities. System also provide a front interface to managing inventory and order. The specification on the feature will be listed in the **System Specification** section below.
 
-- [System Specification](#)
-- [System Requirements](#)
-- [Installation](#)
-- [Database Migration](#)
-- [Testing](#)
-- [Assumptions](#)
-- [License](#)
+- [System Specification](#system_specification)
+- [Installation](#installation)
+- [Database Migration](#database_migration)
+- [Testing](#testing)
+- [Assumptions](#assumptions)
+- [License](#license)
 
-## System Specification
-
-
+<div id="software_requirements"></div>
 ## Software Requirements
 
 My Dev environment are using the follow settings:
 
-- XAMPP Server v3.2.2
+- XAMPP Control Panel v3.2.2 for running the Apache Server
 - Laravel 5.4.12
 - PHP 7.1.1
+- MySQL 5.6
 - jQuery 3.1.1
 - Bootstrap 3.3.7
 - PHPUnit 5.7.13
+- Composer
 
+<div id="installation"></div>
 ## Installation
+Make sure you have setup or have a working Apache and MySQL server running in your local. (Window or Linux etc)
+Make sure you have PHP7 running on your local machine and the Apache server. Sometime if could be different please double confirm your version first. If you in doubt please contact your system admin or hosting provider.
 
+To Start with, first, you need to clone the latest verison of the source to you local directory, where you server's project/public folder is.
+e.g. In windows.
+```
+C:\xampp\htdocs\opi
+```
+Where **opi** is the project folder you created.
+
+Next, you need to have composer install on your machine and use it to install the Laravel application. So go into your project folder if you already have composer installed and type this.
+```
+composer install
+```
+If everything goes well, the installation will be completed without any issue. In case you do encounter any issue during the installation, do feel free to let me know and I could see what I can help.
+
+Assuming everything is done and successful, you should be able to see the home page of the system by using the follow url below:
+```
+http://[your-domain-or-localhost]/[your-project-folder]/public
+
+e.g. 
+http://localhost/opi/public
+```
+I have not change the default home page of Laravel. So it is a good example to test and see you can open this page in Laravel application. Upon succcessful installaion of this system, you should be able to see it without any issue.
+
+Now we need access the system page. Normally I will just use the order home page to access the system.
+```
+e.g.
+http://localhost/opi/public/order
+```
+The system should be pretty empty now. So let inject some dummy data. Please see the next section for more detail.
+
+<div id="database_migration"></div>
 ## Database Migration
+Once you have installed the system and have the database configuration setup with your local server. You can use the following command to import the tables we used for this system.
+** Removeber you need to create the database first and put it into the .env file. You can rename the .env.example file and up the database configuration there.**
+```
+// Run it from your root folder of the laravel framework.
 
+php artisan migrate
+```
+If you want to refresh and redo the migration again you can use this command below.
+```
+php artisan migrate:refresh
+```
+The item physical status lookup table is a must have in the database before you can use the system.
+Please run the following command to import the rows from the seeder file.
+```
+php artisan db:seed --class=ItemPhysicalStatusLookupTableSeeder
+
+```
+Do not run it without the **--class=ItemPhysicalStatusLookupTableSeeder**, because it will import all seeders into the database including the dummy record. If you don't wish to have these dummy data in the table please just run the ItemPhysicalStatusLookupTableSeeder class only.
+
+To help you getting start with the system and testing, here is a set of dummy data from the migration scripts. You can run the command below to import tham all.
+```
+php artisan db:seed
+```
+
+<div id="testing"></div>
 ## Testing
 
-As for unit testing I am using **PHPUnit 5.7.13**
+As for unit testing I am using **PHPUnit 5.7.13**.
 
+I have make some basic unit testing, you can run the following command quickly check is the system ok.
+```
+vendor\bin\phpunit tests/unit
+```
+This is not the full system test. As I have some issue with the PHPUnit json api routing on the test, so I would recommand to go through the frontend and test some of the component, like listing and viewing.
+
+To create an order you will need to send a JSON request to the server. I didn't add the cross origin logic in there. By default you should be able to send request to your localhost.
+
+To do that you will need to install the plugin **Postman** from your browser (preferable Chrome or Firefox).
+
+Set the URL:
+```
+http://localhost/opi/public/api/order/new
+```
+And the JSON request data as following structure. (use raw JSON format in the Postman)
+```
+{
+  "order": {
+    "customer_name": "Gabriel Jaramillo",
+    "address": "test address",
+    "total": 230.00,
+    "items": [
+      {
+        "sku": "TESTSKU4",
+        "quantity": 2
+      },
+      {
+        "sku": "TESTSKU3",
+        "quantity": 1
+      }
+    ]
+  }
+}
+```
+You should be able to see the following output/response:
+
+```
+{
+    "success": true,
+    "message": "A new order [20] has been submitted."
+}
+```
+There is a script/command to be run at the backend (cronjob) to clear up the order status. This is one of the requirement from the requester. Since we can't mannually update the order status, the script will go through the business logic to update status or skip making any change on the order.
+
+```
+php artisan order:processor -vvv
+```
+
+<div id="assumptions"></div>
 ## Assumptions
 1. There is not delete feature for all orders, products and items. Item will only be removed/ unassigned from the order but not deleting from the item list in the system.
 2. All items/ Product requested to the API are valid and “should” be existing in the system. Because if it is not, then it will be automatically created and couldn’t be deleted by current requirement of the application. (see Assumption 1)
@@ -49,7 +154,7 @@ As for unit testing I am using **PHPUnit 5.7.13**
 7. We can’t change the bond between a product and a item. E.g. changing the SKU in an item. Because the item might have been sold/ordered on a customer concern.
 8. The current data structure is assuming one SKU per variant set/ combination. But I have allow product property can select two different type “feature” and “option”. While it is not much of meaning to have option in this setup but I have included it so we can upgrade the logic later.
 
-
+<div id="license"></div>
 ## License
 
 As building from the Laravel framework, I will follow the it's open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
