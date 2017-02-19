@@ -24,9 +24,7 @@
 				<th class="text-center">Order</th>
 				<th>Status</th>
 				<th>Physical Status</th>
-				<th class="text-right">
-					<button id="add-item" class="btn btn-success">New Item</button>
-				</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>

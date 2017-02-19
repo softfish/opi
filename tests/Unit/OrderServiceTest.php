@@ -8,11 +8,11 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class OrderServiceTest extends TestCase
 {
-    public function testOrderServiceInstantiationt()
-    {
-        $order = new \App\Services\OrderService();
-        $this->assertInstanceOf('\App\Services\OrderService', $order, "Failed OrderService intantiation");
-    }
+//     public function testOrderServiceInstantiationt()
+//     {
+//         $order = new \App\Services\OrderService();
+//         $this->assertInstanceOf('\App\Services\OrderService', $order, "Failed OrderService intantiation");
+//     }
     
     
 }
