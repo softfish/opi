@@ -46,6 +46,11 @@ composer install
 ```
 If everything goes well, the installation will be completed without any issue. In case you do encounter any issue during the installation, do feel free to let me know and I could see what I can help.
 
+You also need the encryption key to be generated for Laravel library. Just use the following command to generate a new key for your system.
+```
+php artisan key:generate
+```
+
 Assuming everything is done and successful, you should be able to see the home page of the system by using the follow url below:
 ```
 http://[your-domain-or-localhost]/[your-project-folder]/public
