@@ -37,11 +37,19 @@ class OrderProcessor extends Command
      */
     public function handle()
     {
-        $orders = \App\Models\Order::where('status', 'In porgress')->all();
+        $this->info('Loading order still in progress state..');
+        $orders = \App\Models\Order::where('status', '=', 'In progress')->get();
         
-        foreach ($orders as $order){
-            event(new \App\Events\OrderStatusEvaluation($order));
+        $this->info(count($orders).' of orders found. ');
+        if (!empty($orders)) {
+        $this->info('Start order evaluation...');
+            foreach ($orders as $order){
+                $this->info('checking order ('.$order->id.')...');
+                event(new \App\Events\OrderStatusEvaluation($order));
+                $this->info('checking finished.');
+            }
         }
+        $this->info('Order evaluation end..');
         
     }
 }
