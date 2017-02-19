@@ -13,7 +13,7 @@ return [
             ],
             'Delivered' => [
                 'bar_status' => 'disabled',
-                'bar_info' => ''
+                'bar_info' => 'Item has been delivered to the customer'
             ]
         ],
         'in_warehouse' => [
