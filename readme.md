@@ -6,7 +6,7 @@
 
 This is a project are aimed to create a online system with API for thrid party to push order request with a list specific products and their quantities. System also provide a front interface to managing inventory and order. The specification on the feature will be listed in the **System Specification** section below.
 
-- [System Specification](#)
+- [System Specification](#system_specification)
 - [System Requirements](#)
 - [Installation](#)
 - [Database Migration](#)
@@ -14,6 +14,7 @@ This is a project are aimed to create a online system with API for thrid party t
 - [Assumptions](#)
 - [License](#)
 
+<div id="system_specification"></div>
 ## System Specification
 
 
@@ -21,20 +22,75 @@ This is a project are aimed to create a online system with API for thrid party t
 
 My Dev environment are using the follow settings:
 
-- XAMPP Server v3.2.2
+- XAMPP Control Panel v3.2.2 for running the Apache Server
 - Laravel 5.4.12
 - PHP 7.1.1
+- MySQL 5.6
 - jQuery 3.1.1
 - Bootstrap 3.3.7
 - PHPUnit 5.7.13
+- Composer
 
 ## Installation
+Make sure you have setup or have a working Apache and MySQL server running in your local. (Window or Linux etc)
+Make sure you have PHP7 running on your local machine and the Apache server. Sometime if could be different please double confirm your version first. If you in doubt please contact your system admin or hosting provider.
+
+To Start with, first, you need to clone the latest verison of the source to you local directory, where you server's project/public folder is.
+e.g. In windows.
+```
+C:\xampp\htdocs\opi
+```
+Where **opi** is the project folder you created.
+
+Next, you need to have composer install on your machine and use it to install the Laravel application. So go into your project folder if you already have composer installed and type this.
+```
+composer install
+```
+If everything goes well, the installation will be completed without any issue. In case you do encounter any issue during the installation, do feel free to let me know and I could see what I can help.
+
+Assuming everything is done and successful, you should be able to see the home page of the system by using the follow url below:
+```
+http://[your-domain-or-localhost]/[your-project-folder]/public
+
+e.g. 
+http://localhost/opi/public
+```
+I have not change the default home page of Laravel. So it is a good example to test and see you can open this page in Laravel application. Upon succcessful installaion of this system, you should be able to see it without any issue.
+
+Now we need access the system page. Normally I will just use the order home page to access the system.
+```
+e.g.
+http://localhost/opi/public/order
+```
+The system should be pretty empty now. So let inject some dummy data. Please see the next section for more detail.
 
 ## Database Migration
+Once you have installed the system and have the database configuration setup with your local server. You can use the following command to import the tables we used for this system.
+```
+// Run it from your root folder of the laravel framework.
+
+php artisan migrate
+```
+If you want to refresh and redo the migration again you can use this command below.
+```
+php artisan migrate:refresh
+```
+The item physical status lookup table is a must have in the database before you can use the system.
+Please run the following command to import the rows from the seeder file.
+```
+php artisan db:seed --class=ItemPhysicalStatusLookupTableSeeder
+
+```
+Do not run it without the **--class=ItemPhysicalStatusLookupTableSeeder**, because it will import all seeders into the database including the dummy record. If you don't wish to have these dummy data in the table please just run the ItemPhysicalStatusLookupTableSeeder class only.
+
+To help you getting start with the system and testing, here is a set of dummy data from the migration scripts. You can run the command below to import tham all.
+```
+php artisan db:seed
+```
 
 ## Testing
 
-As for unit testing I am using **PHPUnit 5.7.13**
+As for unit testing I am using **PHPUnit 5.7.13**.
 
 ## Assumptions
 1. There is not delete feature for all orders, products and items. Item will only be removed/ unassigned from the order but not deleting from the item list in the system.
