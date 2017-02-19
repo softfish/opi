@@ -28,7 +28,7 @@ class UpdateOrderStatus
 
         $items = \App\Models\Item::where('order_id', $order->id)->get();
 
-        if (empty($items)){
+        if (empty($items) || count($items) < 1){
             // If there is no more item assign to this order then the order has been cancelled.
             $order->status = 'Cancelled';
         } else {

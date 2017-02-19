@@ -26,18 +26,7 @@
 		</thead>
 		<tbody>
 			@foreach($orders as $order)
-				<?php 
-				    $rowClass = '';
-				    switch($order->status) {
-				        case 'Cancelled':
-				            $rowClass .= 'line-through-danger';
-				            break;
-				        case 'Completed':
-				        case 'In progress':
-				            break;
-				    }
-				?>
-    			<tr class="{{ $rowClass }}">
+    			<tr class="{{ strtolower($order->status) }}">
     				<td>{{ $order->id }} </td>
     				<td>{{ $order->customer_name }} </td>
     				<td>{{ $order->address }} </td>

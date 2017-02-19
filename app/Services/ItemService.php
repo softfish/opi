@@ -109,47 +109,63 @@ class ItemService extends BaseModelService
 	 */
 	public static function bulkCreate(\App\Models\Order $order=null, array $itemsData): void
 	{
-	    // Create an empty Order object for item creation
-	    if (!empty($order)){
+	    // Create an empty Order object for new item creation, if order is not given.
+	    // doing this so we can make this function reusable for order or non-order operation.
+	    // e.g. product's item creation requested by an user. Hence they won't have an order
+	    // for that operation
+	    if (empty($order)){
 	        $order = new \App\Models\Order();
-	    }
+	    }	    
+	    $isNewProductCreated = false;
 	    foreach ($itemsData as $item) {
-	        // find the product using sku
+	        // Find the product using sku
 	        $product = \App\Models\Product::where('sku', $item['sku'])->first();
 	        if (empty($product)) {
-	            // 3.1 create a new product with the new sku and send admin a notification email
+	            // Create a new product with the new sku but don't fire the event to
+	            // send admin a notification email just yet.
+	            // Because we need the order assigned items below to trigger
+	            // "ordered new product notification" email.
 	            $product = \App\Models\Product::create(['sku' => $item['sku']]);
+	            $isNewProductCreated = true;
 	        }
 	    
 	        // Get x number available items by product ID, where x is the quantity requested
 	        $availItems = \App\Models\Item::where('product_id', $product->id)->where('order_id', null)
-	        ->where('status', 'Available')
-	        ->limit($item['quantity'])
-	        ->get();
-	        if (! empty($availItems)) {
+                	        ->where('status', 'Available')
+                	        ->limit($item['quantity'])
+                	        ->get();
+	        $numOfItemsAvailable = count($availItems);
+	        if (! empty($availItems) && $numOfItemsAvailable > 0) {
 	    
-	            switch ($item['quantity'] <=> count($availItems)){
+	            switch ($item['quantity'] <=> $numOfItemsAvailable){
 	                case -1: // we have enought for the order
 	                case 0: // we just have enought for the order
 	                    foreach ($availItems as $availItem) {
 	                        // If we do find the item, then assign it to this order
-	                        $availItem->order_id = ($order->id)?? null;
-	                        $availItem->status = 'Assigned';
-	                        $availItem->physical_status_id = \App\Models\ItemPhysicalStatusLookup::getInitialStatus();
-	                        $availItem->updated_by = 'api';
-	                        $availItem->updated_at = time();
-	                        $availItem->save();
 	                        
-	                        if (!empty($order->id)) {
-	                           \Log::info('Item ('.$availItem->id.') has been assigned to order ('.$order->id.')');
-	                        } else {                    
-	                           \Log::info('A new item('.$newItem->id.') has been created.');
+	                        // Make sure we only need to assign what we need and left the rest of
+	                        // the available item untouched.
+	                        if ($numOfItemsAvailable >= $item['quantity']) {
+    	                        $availItem->order_id = ($order->id)?? null;
+    	                        // If we have an order for this item then assign it else mark it as available.
+    	                        $availItem->status = (isset($order->id))? 'Assigned' : 'Available';
+    	                        $availItem->physical_status_id = \App\Models\ItemPhysicalStatusLookup::getInitialStatus();
+    	                        $availItem->updated_by = 'api';
+    	                        $availItem->updated_at = time();
+    	                        $availItem->save();
+    	                        
+    	                        if (!empty($order->id)) {
+    	                           \Log::info('Item ('.$availItem->id.') has been assigned to order ('.$order->id.')');
+    	                        } else {                    
+    	                           \Log::info('A new item('.$newItem->id.') has been created.');
+    	                        }
+    	                        $numOfItemsAvailable --;
 	                        }
 	                    }
 	                    break;
 	                case 1:
-	                    // we don't have enought item which mean we need to create additional one.
-	                    // (assuming... the item is to order but not created yet)
+	                    // we don't have enough items which mean we need to create additional one.
+	                    // (assuming... the item is to order but not created yet for the physical status.)
 	                    foreach ($availItems as $availItem) {
 	                        // If we do find the item, then assign it to this order
 	                        $availItem->order_id = ($order->id)?? null;
@@ -182,7 +198,7 @@ class ItemService extends BaseModelService
 	            // if we can't find the item, then we will need to create x number of required items for the order.
 	            for ($i=0; $i < $item['quantity']; $i++) {
 	                $service = new \App\Services\ItemService();
-	                $newItem = $service->create([
+                    $newItem = $service->create([
 	                    'product_id'            => $product->id,
 	                    'order_id'              => ($order->id)?? null,
 	                    'status'                => 'Assigned',
@@ -196,6 +212,12 @@ class ItemService extends BaseModelService
 	                }
 	            }
 	        }
+	        
+	        // Now we should have all the items (new or old) need for this request.
+	        // Check do we need to send out a new product notification to admin
+	        if ($isNewProductCreated){
+	            event(new \App\Events\ProductCreated($product));
+	        }
 	    }
 	}
 	
@@ -203,10 +225,10 @@ class ItemService extends BaseModelService
      * 
      * Get the item profile data
      * 
-     * @param unknown $orderId
+     * @param int $orderId
      * @return \stdClass
      */
-	public static function getOrderItemsData($orderId): \Illuminate\Support\Collection
+	public static function getOrderItemsData(int $orderId): \Illuminate\Support\Collection
 	{
 	    $orderItems = \DB::table('items')
 	    ->join('products', 'products.id', '=', 'items.product_id')
@@ -300,7 +322,7 @@ class ItemService extends BaseModelService
     	        }
     	    }
 	    }
-	    if (!empty($validFilters)){
+	    if (!empty($validFilters) && count($validFilters) > 0){
 	       $query = $this->applyFilters($query, $validFilters);
 	    }
 	    $rows = $query->paginate($paginationLimit);

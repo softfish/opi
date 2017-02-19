@@ -57,22 +57,12 @@ class OrderService extends BaseModelService
 		$order = \App\Models\Order::find($data['id']);
 		if (!empty($order)){
 			// Now we can update the fields in the order
-			// 1. update customer info.
 			$order->customer_name = $data['customerName']?? $order->customer_name;
 			$order->address = $data['address']?? $order->address;
 			$order->updated_by = $data['updatedBy']?? 'user';
 			$order->updated_at = time();
 			$order->save();			
 
-			// Oops this shouldn't be here... This part of logic should be in the event
-			// 2. update the item list here.
-			// if ($order->status === 'Cancelled'){
-			// 	// 2.1.1 We need to release the items back to avaiable state.
-			// 	// 2.1.2 For each released item, we also need to check is the product need to be unlocked if there is no more assigned
-			// 	//       items from this product
-			// } else {
-			// 	// 2.2.1 If the order still not
-			// }
 		} else {
 			\Log::error(__METHOD__.': order ('.$data['id'].') not found in the system.');
 		}

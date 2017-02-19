@@ -47,10 +47,19 @@
         				<tr>
         					<td><strong>Physical Status</strong></td>
         					<td>
-        						<select id="item_status_selection" class="form-control" data-itemid="{{ $item->item_id }}" {{ (empty($item->order_id))? 'disabled' : '' }}>
+        						<select id="item_status_selection" class="form-control" data-itemid="{{ $item->item_id }}">
         							<option value="" disabled>Select a Physical Status</option>
         							@foreach($availablePhyscialStatus as $pStatus)
-        								<option value="{{ $pStatus->id }}" {{ ($pStatus->id === $item->physical_status_id)? 'selected' : '' }}>{{ $pStatus->name }}</option>
+        								{{--
+        									IF it has not assigned to an order, then we should allow it to change to delivered status
+        								--}}
+        								@if (!empty($item->order_id))
+        									<option value="{{ $pStatus->id }}" {{ ($pStatus->id === $item->physical_status_id)? 'selected' : '' }}>{{ $pStatus->name }}</option>
+        								@else
+        									@if ($pStatus->name != "Delivered")
+        										<option value="{{ $pStatus->id }}" {{ ($pStatus->id === $item->physical_status_id)? 'selected' : '' }}>{{ $pStatus->name }}</option>
+        									@endif
+        								@endif
         							@endforeach()
         						</select>
         					</td>
@@ -79,6 +88,9 @@
     				</ol>
     			</li>
     		</ul>
+    	</div>
+    	<div class="alert alert-warning">
+    		* You only can change the item's status to "Delivered" if it is assigned to an order.
     	</div>
     </div>
 </div>

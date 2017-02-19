@@ -95,7 +95,7 @@ class ItemController extends Controller
         // Since we can just reuse the itemList function in ItemService with a filter,
         // we just need to make sure we only pass the first record to item.
         // Also we can use the information from the joined tables.
-        if (!empty($items)){
+        if (!empty($items) && count($items) > 0){
             $item = $items[0];
             return view('admin.item.view-jq', ['item' => $item, 'availablePhyscialStatus' => $availablePhyscialStatus]);
         }

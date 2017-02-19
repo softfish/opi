@@ -35,7 +35,7 @@ class OrderController extends Controller
             // 1. create an order
             $service = new \App\Services\OrderService();
             $order = $service->create($postdata['order']);
-
+            
             if (! empty($order)) {
                 \App\Services\ItemService::bulkCreate($order, $postdata['order']['items']);
                 return \Response::json([

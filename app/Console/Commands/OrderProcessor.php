@@ -41,7 +41,7 @@ class OrderProcessor extends Command
         $orders = \App\Models\Order::where('status', '=', 'In progress')->get();
         
         $this->info(count($orders).' of orders found. ');
-        if (!empty($orders)) {
+        if (!empty($orders) && count($orders) > 0) {
         $this->info('Start order evaluation...');
             foreach ($orders as $order){
                 $this->info('checking order ('.$order->id.')...');

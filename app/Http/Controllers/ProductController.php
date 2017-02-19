@@ -177,7 +177,7 @@ class ProductController extends Controller
                 $items[] = $service->create($postdata);
             }
             
-            if (empty($items)){
+            if (count($items) < 1){
                 $flashMessages['danger'][] = 'Create item failed';
             } else {
                 $flashMessages['success'][] = count($items).' x Item(s) has been created for this product.';

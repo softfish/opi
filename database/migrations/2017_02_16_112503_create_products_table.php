@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('sku', 25)->unique();
             $table->string('label', 100)->nullable();
             $table->string('description')->nullable();
-            $table->float('price');
+            $table->float('price')->default(0);
             $table->string('updated_by', 10)->nullable();
             $table->string('created_by', 10)->default('system');
             $table->timestamps();
