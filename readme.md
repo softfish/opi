@@ -1,40 +1,55 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
-
 <p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
-## About Laravel
+## About OPI
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+This is a project are aimed to create a online system with API for thrid party to push order request with a list specific products and their quantities. System also provide a front interface to managing inventory and order. The specification on the feature will be listed in the **System Specification** section below.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [System Specification](#)
+- [System Requirements](#)
+- [Installation](#)
+- [Database Migration](#)
+- [Testing](#)
+- [Assumptions](#)
+- [License](#)
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+## System Specification
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+## Software Requirements
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+My Dev environment are using the follow settings:
 
-## Contributing
+- XAMPP Server v3.2.2
+- Laravel 5.4.12
+- PHP 7.1.1
+- jQuery 3.1.1
+- Bootstrap 3.3.7
+- PHPUnit 5.7.13
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+## Installation
 
-## Security Vulnerabilities
+## Database Migration
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+## Testing
+
+As for unit testing I am using **PHPUnit 5.7.13**
+
+## Assumptions
+1. There is not delete feature for all orders, products and items. Item will only be removed/ unassigned from the order but not deleting from the item list in the system.
+2. All items/ Product requested to the API are valid and “should” be existing in the system. Because if it is not, then it will be automatically created and couldn’t be deleted by current requirement of the application. (see Assumption 1)
+3. Products and items should be locked down once the relative items have been assigned to an order.
+4. Removing the Item from an order will not change the total cost on the order. The reason the order can be done by a client with alteration on the price of the product. Event we have price value on the product record, it might not be consistent with the order value. So will just assuming we won’t change the cost when item has been removed from the order. (Ideally maybe we should allow total in order to be editable, putting it to wish list)
+5. When removing item from the order, assuming we are only allow item to be removed if:
+  1. Order is not completed
+  2. That item has not been delivered (even it is on road with driver…)
+  3. We are not going to address any more business logic here e.g. And order with half items has been delivered and damaged good etc. We could build but it is not in this scope of the project.
+6. All product will be created if it is missing from an incoming order. This doesn’t take into consideration on product which has been discontinued.
+7. We can’t change the bond between a product and a item. E.g. changing the SKU in an item. Because the item might have been sold/ordered on a customer concern.
+8. The current data structure is assuming one SKU per variant set/ combination. But I have allow product property can select two different type “feature” and “option”. While it is not much of meaning to have option in this setup but I have included it so we can upgrade the logic later.
+
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+As building from the Laravel framework, I will follow the it's open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
