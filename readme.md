@@ -10,6 +10,7 @@ This is a project are aimed to create a online system with API for thrid party t
 - [Installation](#installation)
 - [Database Migration](#database_migration)
 - [Testing](#testing)
+- [Howto](#howto)
 - [Assumptions](#assumptions)
 - [License](#license)
 
@@ -139,6 +140,27 @@ There is a script/command to be run at the backend (cronjob) to clear up the ord
 ```
 php artisan order:processor -vvv
 ```
+
+<div id="howto"></div>
+## How To?
+### 1. How do I subject an order request?
+##### You can use browser plugin like Postman. Please see the Testing section for instruction.
+### 2. How do I view an Order?
+##### In the order list, at the end of each row. You click on the view button to see a specific order information.
+### 3. How do I remove an item from Order?
+##### You can remove an item from the order information page. Just click on the remove button next to the item you want to remove it.
+### 4. How do I update the status of an Item?
+##### You need to view an item first and in the specific item page, you should be able to use the status drop down to change the Item status. Keep it in mind that you won't be set any item to be delivered if it hasn't assigned to any order.
+### 5. How to create a new item?
+##### Item must be coming from a product, therefore you need go to a specific product page first and just increase the number add the bottom of the left and click Add. No other additional information are required.
+### 6. How do I assign an item to an order?
+##### You can't do it from the interface. You must submit with a order request through the API. Then based on your request item SKU, the system will allocation the next available item to your order.
+### 7. How do I change the order status to Cancelled, when there is no more item attached to it?
+##### You can manually change an item status. By removing the last item in the order WON'T update status either. The only way the order's status will change to "Cancelled", is when you run the order:processor script. It's logic will pickup the order and change it to "Cancelled". Please see Testing for more information.
+### 8. How do the admin get the email for a new product created into the system?
+##### If you try to create an product through the interface, you won't have received any notification email. The request must come from an Order request. So if an order is required a item with an new product (which is not in the system yet). The system will create a new product for ordered items. At that time an event will be fired and the handler will determine should the system sending out a notification email.
+### 9. Why I can't change the item status?
+##### This is likely that the order has been completed and not in "In progress" status. Because it doesn't make sense that you still can change the status of an item that it's order has been completed.
 
 <div id="assumptions"></div>
 ## Assumptions
