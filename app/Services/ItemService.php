@@ -40,10 +40,11 @@ class ItemService extends BaseModelService
 		if (empty($product)){
 			// If we can't find the product then we will need to generate a new one
 			$productData = [
-				'sku' => $productSku,
+				'sku' => $data['sku'],
 				'created_by' => 'system'
 			];
-			$product = \App\Services\ProductService::create($productData);
+			$service = new \App\Services\ProductService();
+			$product = $service->create($productData);
 		}
 		
 		$data['product_id'] = $product->id;
@@ -72,7 +73,7 @@ class ItemService extends BaseModelService
 	 * @return \App\Models\Item
 	 *
 	 */
-	public function update(array $data): \App\Models\Item
+	public function update(array $data)
 	{
 		$item = \App\Models\Item::find($data['id']);
 

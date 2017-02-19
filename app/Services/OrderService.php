@@ -21,12 +21,7 @@ class OrderService extends BaseModelService
 	 */
 	public function create(array $data): \App\Models\Order
 	{
-		// Validate the data before injecting it to the database
-		// This assuming the data which passed down here has going through the HTML input validation in controller
-
-		// TODO
-		// create order, create product (optional), create item (optional)
-
+	    // Create a new order record here
 		$order = \App\Models\Order::create($data);
 		return $order;
 	}
