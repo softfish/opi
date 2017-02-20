@@ -148,7 +148,7 @@ php artisan order:processor -vvv
 
 <div id="howto"></div>
 ## How To?
-### 1. How do I subject an order request?
+### 1. How do I submit an order request?
 ##### You can use browser plugin like Postman. Please see the Testing section for instruction.
 ### 2. How do I view an Order?
 ##### In the order list, at the end of each row. You click on the view button to see a specific order information.
