@@ -13,6 +13,7 @@ This is a project are aimed to create a online system with API for thrid party t
 - [Howto](#howto)
 - [Assumptions](#assumptions)
 - [License](#license)
+- [Sandbox Server - EC2] (#sandboxserver)
 
 <div id="software_requirements"></div>
 ## Software Requirements
@@ -185,3 +186,12 @@ php artisan order:processor -vvv
 ## License
 
 As building from the Laravel framework, I will follow the it's open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+
+<div id="sandboxserver"></div>
+## Sandbox Server on Amazon EC2
+
+An Amazon EC2 is setup for sandbox testing. You can look around in here if you interested. Do tell me if you encouter any bugs or suggestion.
+
+Happy Coding!
+
+<a href="http://ec2-52-34-176-166.us-west-2.compute.amazonaws.com/opi/public/order/">Sandbox Server</a>
