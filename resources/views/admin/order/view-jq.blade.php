@@ -76,7 +76,7 @@
             			@foreach($orderItems as $orderItem)
             				<tr class="item-summary item-{{ $orderItem->item_id }}-row">
                 				<td>{{ $orderItem->item_id }}</td>
-                				<td>{{ $orderItem->sku }} <a class="product-link" target="_blank" href="{{ url('/product') }}/{{ $orderItem->product_id }}"><i class="fa fa-external-link" aria-hidden="true"></i></a></td>
+                				<td>{{ $orderItem->sku }} <a class="product-link" target="_blank" href="{{ url('/product/view') }}/{{ $orderItem->product_id }}"><i class="fa fa-external-link" aria-hidden="true"></i></a></td>
                 				<!-- <td class="text-center">{{ $orderItem->item_physical_status }}</td> -->
                 				<td class="text-center">
                 					<div class="btn-group">
