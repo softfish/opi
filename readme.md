@@ -194,4 +194,4 @@ An Amazon EC2 is setup for sandbox testing. You can look around in here if you i
 
 Happy Coding!
 
-<a href="http://ec2-52-34-176-166.us-west-2.compute.amazonaws.com/opi/public/order/">Sandbox Server</a>
+<a href="http://ec2-52-34-176-166.us-west-2.compute.amazonaws.com/opi/public/order/list">Sandbox Server</a>
