@@ -12,22 +12,23 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
-Route::group(['prefix' => 'order'], function(){
+Route::group(['prefix' => 'order', 'middleware' => 'auth'], function(){
     Route::get('/', function(){ return redirect('order/list'); });
     Route::get('list', ['as' => 'web-order-list', 'uses' => 'OrderController@webList']);
     Route::get('view/{id}', 'OrderController@viewOrder');
+    Route::get('listv2', function(){return view('admin/order/list');});
 });
 
-Route::group(['prefix' => 'item'], function(){
+Route::group(['prefix' => 'item', 'middleware' => 'auth'], function(){
     Route::get('/', function(){ return redirect('item/list'); });
     Route::get('list', ['as' => 'web-item-list', 'uses' => 'ItemController@webList']);
     Route::get('view/{id}', 'ItemController@viewItem');
 });
 
-Route::group(['prefix' => 'product'], function(){
+Route::group(['prefix' => 'product', 'middleware' => 'auth'], function(){
     Route::get('/', function(){ return redirect('product/list'); });
     Route::get('list', ['as' => 'web-product-list', 'uses' => 'ProductController@webList']);
     Route::get('view/{id}', 'ProductController@viewProduct');
@@ -36,3 +37,6 @@ Route::group(['prefix' => 'product'], function(){
     Route::post('new', 'ProductController@addNewProduct');
     Route::get('new', function(){ return redirect('product/list'); });
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');

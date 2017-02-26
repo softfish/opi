@@ -12,9 +12,6 @@
 	<img width="100" src="{{ asset('img/laravel_logo.png') }}" />
 	<img width="100" src="{{ asset('img/jQuery_logo.png') }}" />
 	<img width="100" src="{{ asset('img/bootstrap_logo.png') }}" />
-	<div class="text-right">
-		<a href="{{ url('logout') }}"></a>
-	</div>
 </header>
     <nav class="navbar navbar-default">
     	<div class="container-fluid">
@@ -23,9 +20,8 @@
               </a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a href="{{ url('order/list') }}">Orders</a></li>
-                <li><a href="{{ url('product/list') }}">Products</a></li>
-                <li><a href="{{ url('item/list') }}">Items</a></li>
+                <li><a href="{{ url('/') }}">Home</a></li>
+                <li><a href="{{ url('order/list') }}">Admin</a></li>
             </ul>
             
             <!-- Right Side Of Navbar -->
