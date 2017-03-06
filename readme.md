@@ -194,4 +194,14 @@ An Amazon EC2 is setup for sandbox testing. You can look around in here if you i
 
 Happy Coding!
 
-<a href="http://ec2-52-34-176-166.us-west-2.compute.amazonaws.com/opi/public/order/list">Sandbox Server</a>
+<a target="_blank" href="http://ec2-52-37-67-55.us-west-2.compute.amazonaws.com/opi/public/order/list">Sandbox Server</a>
+
+Sometime when I play around with the server, which might case the DNS change and you might not be able to open the page with the link above.
+
+If not you can try the link below. I have setup an A record in the DNS for this subdomain point to the elastic IP for the server instance. 
+
+<a target="_blank" href="http://opi.ateliersign.com/opi/public/order/list">Sandbox Server</a>
+
+Otherwise, you still can't access the demon, please feel free to send me an email and I will look into it.
+
+
