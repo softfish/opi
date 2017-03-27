@@ -16,6 +16,7 @@ This is a project are aimed to create a online system with API for thrid party t
 - [Sandbox Server - EC2] (#sandboxserver)
 
 <div id="software_requirements"></div>
+
 ## Software Requirements
 
 My Dev environment are using the follow settings:
@@ -30,6 +31,7 @@ My Dev environment are using the follow settings:
 - Composer
 
 <div id="installation"></div>
+
 ## Installation
 Make sure you have setup or have a working Apache and MySQL server running in your local. (Window or Linux etc)
 Make sure you have PHP7 running on your local machine and the Apache server. Sometime if could be different please double confirm your version first. If you in doubt please contact your system admin or hosting provider.
@@ -69,6 +71,7 @@ http://localhost/opi/public/order
 The system should be pretty empty now. So let inject some dummy data. Please see the next section for more detail.
 
 <div id="database_migration"></div>
+
 ## Database Migration
 Once you have installed the system and have the database configuration setup with your local server. You can use the following command to import the tables we used for this system.
 ** Removeber you need to create the database first and put it into the .env file. You can rename the .env.example file and up the database configuration there.**
@@ -96,6 +99,7 @@ php artisan db:seed
 ```
 
 <div id="testing"></div>
+
 ## Testing
 
 As for unit testing I am using **PHPUnit 5.7.13**.
@@ -171,6 +175,7 @@ php artisan order:processor -vvv
 ##### This is likely that the order has been completed and not in "In progress" status. Because it doesn't make sense that you still can change the status of an item that it's order has been completed.
 
 <div id="assumptions"></div>
+
 ## Assumptions
 1. There is no delete feature for all orders, products and items. Item will only be removed/ unassigned from the order but not deleting from the item list in the system.
 2. All items/ Product requested to the API are valid and “should” be existing in the system. Because if it is not, then it will be automatically created and couldn’t be deleted by current requirement of the application. (see Assumption 1)
@@ -185,11 +190,13 @@ php artisan order:processor -vvv
 8. The current data structure is assuming one SKU per variant set/ combination. But I have allow product property can select two different type “feature” and “option”. While it is not much of meaning to have option in this setup but I have included it so we can upgrade the logic later.
 
 <div id="license"></div>
+
 ## License
 
 As building from the Laravel framework, I will follow the it's open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
 
 <div id="sandboxserver"></div>
+
 ## Sandbox Server on Amazon EC2
 
 An Amazon EC2 is setup for sandbox testing. You can look around in here if you interested. Do tell me if you encouter any bugs or suggestion.
