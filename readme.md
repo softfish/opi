@@ -72,6 +72,7 @@ The system should be pretty empty now. So let inject some dummy data. Please see
 ## Database Migration
 Once you have installed the system and have the database configuration setup with your local server. You can use the following command to import the tables we used for this system.
 ** Removeber you need to create the database first and put it into the .env file. You can rename the .env.example file and up the database configuration there.**
+
 ```
 // Run it from your root folder of the laravel framework.
 
